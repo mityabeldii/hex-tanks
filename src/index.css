@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: FrutigerNeueLTW1G-Regular sans-serif;
+}
+
+::placeholder {
+    color: white;
+}
+
+@font-face {
+    font-family: FrutigerNeueLTW1G-Regular sans-serif;
+    src: url('./assets/fonts/frutiger/FrutigerNeueLTW1G-Regular.otf');
+}
+
+@font-face {
+    font-family: FrutigerNeueLTW1G-Heavy sans-serif;
+    src: url('./assets/fonts/frutiger/FrutigerNeueLTW1G-Heavy.otf');
+}
+
+@font-face {
+    font-family: FrutigerNeueLTW1G-Thin sans-serif;
+    src: url('./assets/fonts/frutiger/FrutigerNeueLTW1G-UltLt.otf');
+}
