@@ -1,11 +1,15 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import './index.css';
+// Импортируем все картинки
 import tank_image from './assets/images/tank.png';
 import shield from './assets/images/antivirus.png';
 import health from './assets/images/like.png';
 import bullets from './assets/images/bullet.png';
 import gun_up from './assets/images/gun-up.png';
+// Импортируем карту
+// import map from './map_0'
+import map from './map_1'
 
 // Components
 export const Container = styled.div`
@@ -111,6 +115,48 @@ class App extends React.Component {
     // Задаем сторону шестигранника относительно высоты окна. При изменении высоты окна нужно обносвить страницу.
     hexSide = ((window.innerHeight * 0.9) / 12).toFixed(2) * 0.61
 
+    componentDidMount () {
+        // componentDidMount - метод React.Component, который срабатывает при загрузке компонента
+
+        // Создаем локацию 12*12 в виде квадратной таблицы. Все поля сущесвуют и пусты
+        let location = []
+        for (let i = 0; i < 12; i++) {
+            let row = []
+            for (let j = 0; j < 12; j++) {
+                row.push({
+                    disabled: false,
+                    wall: false,
+                })
+            }
+            location.push(row)
+        }
+        // Создаем стены, аптечки, броню, заряды для лазера на поле, убираем нектоорые клетки
+        for (let i in map.disabled) {
+            location[map.disabled[i][0]][map.disabled[i][1]].disabled = true
+        }
+        for (let i in map.walls) {
+            location[map.walls[i][0]][map.walls[i][1]].walls = true
+        }
+        for (let i in map.health) {
+            location[map.health[i][0]][map.health[i][1]].health = true
+        }
+        for (let i in map.shield) {
+            location[map.shield[i][0]][map.shield[i][1]].shield = true
+        }
+        for (let i in map.bullets) {
+            location[map.bullets[i][0]][map.bullets[i][1]].bullets = true
+        }
+        for (let i in map.gunUp) {
+            location[map.gunUp[i][0]][map.gunUp[i][1]].gunUp = true
+        }
+
+        this.setState({
+            tank1: map.tanks[0],
+            tank2: map.tanks[1],
+            location: location
+        })
+    }
+
     getCoordinatesByIndexes = (i, j) => {
         // Функция возвращает по индексам шестигранника его абсолютные координаты x и y
         let x = (j + 1) * Math.sqrt(3) * this.hexSide + 1 * j - this.hexSide
@@ -181,30 +227,6 @@ class App extends React.Component {
                 }
             </Container>
         )
-    }
-
-    componentDidMount () {
-        // componentDidMount - метод React.Component, который срабатывает при загрузке компонента
-
-        // Создаем локацию 12*12 в виде квадратной таблицы. Все поля сущесвуют и пусты
-        let location = []
-        for (let i = 0; i < 12; i++) {
-            let row = []
-            for (let j = 0; j < 12; j++) {
-                row.push({
-                    disabled: false,
-                    wall: false,
-                })
-            }
-            location.push(row)
-        }
-        // Создаем стены, аптечки, броню, заряды для лазера на поле, убираем нектоорые клетки
-        location[3][7].disabled = true
-        location[8][3].wall = true
-        location[5][2].health = true
-        location[2][4].shield = true
-        location[6][4].bullets = true
-        this.setState({location: location})
     }
 
     hex = (x, y, color, image) => {
@@ -342,6 +364,16 @@ class App extends React.Component {
         }
     }
 
+    checkGunUp = (i, j) => {
+        // Функция проверяем на наличие зарядов лазера в клетке с координатами [i, j],
+        // если эти координаты в пределах массива
+        if (this.checkInLocation(i, j)) {
+            return this.state.location[i][j].gunUp
+        } else {
+            return false
+        }
+    }
+
     checkInLocation = (i, j) => {
         // Функция проверяем координаты [i, j] в пределах массива
         return ((i < 12) && (j < 12) && (i >= 0) && (j >= 0))
@@ -404,6 +436,12 @@ class App extends React.Component {
             if (this.checkBullets(tank.i, tank.j)) {
                 tank.bullets = Math.max(0, Math.min(tank.bullets + 1, tank.maxBullets))
                 location[tank.i][tank.j].bullets = false
+            }
+            // Аналогично на наличие улучшения для лазера для лазера в клетке
+            let lazerLength = tank.lazerLength
+            if (this.checkGunUp(tank.i, tank.j)) {
+                tank.lazerLength = Math.max(0, tank.lazerLength + 1)
+                location[tank.i][tank.j].gunUp = false
             }
             // Если новые координаты не выходят за пределы поля, не являются стеной или вообще есть на
             // карте - обновляем state танка
@@ -631,6 +669,10 @@ class App extends React.Component {
                                     // Если в поле есть заряды для лазера - передаем в картинку иконку патронов
                                     if (this.checkBullets(i, j)) {
                                         image = bullets
+                                    }
+                                    // Если в поле есть аптечка - передаем в картинку иконку сердца
+                                    if (this.checkGunUp(i, j)) {
+                                        image = gun_up
                                     }
                                     return this.hex(coordinates.x, coordinates.y, color, image)
                                 } else {
