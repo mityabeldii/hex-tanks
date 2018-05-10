@@ -8,8 +8,8 @@ import health from './assets/images/like.png';
 import bullets from './assets/images/bullet.png';
 import gun_up from './assets/images/gun-up.png';
 // Импортируем карту
-// import map from './map_0'
-import map from './map_1'
+import map from './map_0'
+// import map from './map_1'
 
 // Components
 export const Container = styled.div`
@@ -155,6 +155,27 @@ class App extends React.Component {
             tank2: map.tanks[1],
             location: location
         })
+
+        let addBullets = () => {
+            // Функция создает на поле дополнительные ячейки с пулями и здоровьем
+            let location = this.state.location
+            // Генерируем случайные координаты
+            let i = (Math.random(11)*10).toFixed(0)
+            let j = (Math.random(11)*10).toFixed(0)
+            // Помещаем заряд для лазера в них
+            location[i][j].bullets = true;
+            // Генерируем еще координаты
+            i = (Math.random(11)*10).toFixed(0)
+            j = (Math.random(11)*10).toFixed(0)
+            // Помещаем аптечку в них
+            location[i][j].health = true;
+            // Присваеваем все в state для перерисовки
+            this.setState({location: location})
+            // Создаем выполнение этой же функции спустя 1сек
+            setTimeout(() => {addBullets()}, 1000)
+        }
+        setTimeout(() => {addBullets()}, 0)
+
     }
 
     getCoordinatesByIndexes = (i, j) => {
