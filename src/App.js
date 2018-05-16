@@ -174,7 +174,7 @@ class App extends React.Component {
             // Создаем выполнение этой же функции спустя 1сек
             setTimeout(() => {addBullets()}, 1000)
         }
-        setTimeout(() => {addBullets()}, 0)
+        // setTimeout(() => {addBullets()}, 0)
 
     }
 
@@ -657,7 +657,7 @@ class App extends React.Component {
                 {/*Оно существует, если здоровья обоих танков больше 0*/}
                 {
                     +this.state.tank1.health === 0 || +this.state.tank2.health === 0 ? null :
-                        <Input type="text" value={""} onKeyPress={this.handleKeyPress} autofocus="true" />
+                        <Input type="text" value={""} onKeyUp={this.handleKeyPress} autofocus="true" />
                 }
                 {/*Левое поле игрока (1)*/}
                 {this.sideBar(0)}
