@@ -12,7 +12,7 @@ import map from './map_0'
 // import map from './map_1'
 
 // Components
-export const Container = styled.div`
+const Container = styled.div`
    width: ${props => props.width === undefined ? 100 : props.width}${props => props.widthUnit === undefined ? `vw` : props.widthUnit};
    height: ${props => props.height === undefined ? 100 : props.height}${props => props.heightUnit === undefined ? `vh` : props.heightUnit};
    background-color: ${props => props.backgroundColor=== undefined ? `red` : props.backgroundColor};
@@ -172,7 +172,7 @@ class App extends React.Component {
             // Присваеваем все в state для перерисовки
             this.setState({location: location})
             // Создаем выполнение этой же функции спустя 1сек
-            setTimeout(() => {addBullets()}, 1000)
+            setTimeout(() => {addBullets()}, 5000)
         }
         // setTimeout(() => {addBullets()}, 0)
 
@@ -536,7 +536,7 @@ class App extends React.Component {
         // Создаем пустой массив, в который потом будем добавлять индексы клеток на пути лазера
         let array = []
         let { i, j } = tank
-        // Добавляем в массив клетку с танков
+        // Добавляем в массив клетку с танком
         array.push({ i: i, j: j })
         // Создаем indexOfMove - равный индексу угла, равному текущему углу танка относительно напревления вверх
         let indexOfMove = this.angles.indexOf(tank.angle)
@@ -559,7 +559,7 @@ class App extends React.Component {
                                 tank2: {
                                     ...this.state.tank2,
                                     shield: this.state.tank2.shield > 0 ? this.state.tank2.shield - 1 : this.state.tank2.shield,
-                                    health:this.state.tank2.shield > 0 ? this.state.tank2.health : Math.max(0, this.state.tank2.health - 1)
+                                    health:this.state.tank2.shield > 0 ? this.state.tank2.health : Math.max(0, this.state.tank2.health + 1)
                                 }
                             })
                         }, 300)
@@ -567,13 +567,13 @@ class App extends React.Component {
                 } else {
                     // Или второй в первого
                     if ((this.state.tank1.i === i) && (this.state.tank1.j === j)) {
-                        // Если да - то через 300мсек после выстрела отнимаем здоровье у первого танка
+                        // Если да - то через 300мсек после выстрела отнимаем здоровье у второго танка
                         setTimeout(() => {
                             this.setState({
                                 tank1: {
                                     ...this.state.tank1,
                                     shield: this.state.tank1.shield > 0 ? this.state.tank1.shield - 1 : this.state.tank1.shield,
-                                    health:this.state.tank1.shield > 0 ? this.state.tank1.health : Math.max(0, this.state.tank1.health - 1)
+                                    health:this.state.tank1.shield > 0 ? this.state.tank1.health : Math.max(0, this.state.tank1.health + 1)
                                 }
                             })
                         }, 300)
